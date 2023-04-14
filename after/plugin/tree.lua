@@ -6,6 +6,7 @@ vim.g.loaded_netrwPlugin = 1
 vim.opt.termguicolors = true
 
 vim.keymap.set("n", "<C-n>", vim.cmd.NvimTreeToggle)
+vim.keymap.set("n", "<leader>it", vim.cmd.NvimTreeFindFile)
 
 -- empty setup using defaults
 require("nvim-tree").setup()
