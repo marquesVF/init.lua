@@ -29,7 +29,10 @@ return require('packer').startup(function(use)
 
   use('mbbill/undotree')
 
+  -- git related
   use('tpope/vim-fugitive')
+  use('tveskag/nvim-blame-line')
+  -- end git related
 
   -- autocompletion
   use({
