@@ -12,5 +12,10 @@ vim.keymap.set("n", "<leader>it", vim.cmd.NvimTreeFindFile)
 require("nvim-tree").setup()
 
 
+local tree = require('nvim-tree.view')
+
 -- show line numbers in the tree
-require'nvim-tree.view'.View.winopts.relativenumber = true
+tree.View.winopts.relativenumber = true
+-- don't resize the window when opening a file from the tree viewer
+tree.View.preserve_window_proportions = true
+

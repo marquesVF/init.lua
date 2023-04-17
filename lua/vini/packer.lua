@@ -72,4 +72,12 @@ return require('packer').startup(function(use)
   use '/glepnir/lspsaga.nvim'
   use 'mhinz/vim-signify'
   use 'Pocco81/auto-save.nvim'
+
+  -- pop-up preview for references, implementations, etc
+  use {
+    'rmagatti/goto-preview',
+    config = function()
+      require('goto-preview').setup { }
+    end
+  }
 end)
