@@ -42,7 +42,7 @@ return require('packer').startup(function(use)
       -- LSP Support
       { 'neovim/nvim-lspconfig' }, -- Required
       {
-                                   -- Optional
+        -- Optional
         'williamboman/mason.nvim',
         run = function()
           pcall(vim.cmd, 'MasonUpdate')
@@ -77,7 +77,18 @@ return require('packer').startup(function(use)
   use {
     'rmagatti/goto-preview',
     config = function()
-      require('goto-preview').setup { }
+      require('goto-preview').setup {}
     end
   }
+
+  -- for coding stats
+  use 'wakatime/vim-wakatime'
+
+  -- for Rust Only
+  use 'neovim/nvim-lspconfig'
+  use 'simrat39/rust-tools.nvim'
+
+  -- Debugging
+  use 'nvim-lua/plenary.nvim'
+  use 'mfussenegger/nvim-dap'
 end)
