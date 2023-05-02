@@ -90,9 +90,6 @@ return require('packer').startup(function(use)
 
   -- Debugging
   use 'nvim-lua/plenary.nvim'
-  use 'mfussenegger/nvim-dap'
-
-  -- Web dev
   use 'mfussenegger/nvim-dap' -- Debug Adapter Protocol (inspect application state - jester dep)
   use 'David-Kunz/jester' -- run and debug jest tests
 end)
