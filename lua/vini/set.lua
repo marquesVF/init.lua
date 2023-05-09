@@ -30,6 +30,8 @@ vim.opt.updatetime = 50
 
 vim.opt.colorcolumn = "80"
 
---vim.opt.equalalways = false
+-- highlight the current line
+vim.opt.cursorline = true
 
+--vim.opt.equalalways = false
 

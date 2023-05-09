@@ -29,5 +29,8 @@ vim.keymap.set("n", "<leader><leader>", function()
     vim.cmd("so")
 end)
 
-
+-- Terminal shortcuts
+vim.keymap.set('t', '<Esc>', "<C-\\><C-n>") -- exit terminal-mode with ESC
+vim.keymap.set('n', '<leader>nt', ":edit term://zsh <CR>") -- nt: new terminal
+vim.keymap.set('n', '<leader>nvt', ":vsplit term://zsh <CR>") -- nvt: new vertical terminal
 
