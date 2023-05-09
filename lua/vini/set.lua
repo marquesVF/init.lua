@@ -33,5 +33,6 @@ vim.opt.colorcolumn = "80"
 -- highlight the current line
 vim.opt.cursorline = true
 
---vim.opt.equalalways = false
+-- yank to clipboard: handy when copying things from and to neovim
+vim.opt.clipboard = "unnamedplus"
 
