@@ -51,9 +51,14 @@ return require('packer').startup(function(use)
       { 'williamboman/mason-lspconfig.nvim' }, -- Optional
 
       -- Autocompletion
-      { 'hrsh7th/nvim-cmp' },     -- Required
-      { 'hrsh7th/cmp-nvim-lsp' }, -- Required
-      { 'L3MON4D3/LuaSnip' },     -- Required
+      { 'hrsh7th/cmp-buffer' },   -- buffer files
+      { 'hrsh7th/cmp-nvim-lsp' }, -- LSP for neovim built-in language
+      { 'hrsh7th/cmp-path' },     -- file paths
+      { 'hrsh7th/nvim-cmp' },     -- auto-completion
+      {
+        'L3MON4D3/LuaSnip',
+        dependencies = { 'rafamadriz/friendly-snippets' }
+      }, -- for lua developers
     }
   })
 
@@ -65,7 +70,6 @@ return require('packer').startup(function(use)
   use 'preservim/nerdcommenter'
   use 'maxmellon/vim-jsx-pretty'
   use 'jiangmiao/auto-pairs'
-  use 'rafamadriz/friendly-snippets'
   use 'onsails/lspkind.nvim'       -- better visual for the autocomplete
   use '/nvim-lualine/lualine.nvim' -- status line
   use '/akinsho/bufferline.nvim'
@@ -91,5 +95,5 @@ return require('packer').startup(function(use)
   -- Debugging
   use 'nvim-lua/plenary.nvim'
   use 'mfussenegger/nvim-dap' -- Debug Adapter Protocol (inspect application state - jester dep)
-  use 'David-Kunz/jester' -- run and debug jest tests
+  use 'David-Kunz/jester'     -- run and debug jest tests
 end)
