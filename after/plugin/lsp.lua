@@ -39,6 +39,7 @@ lsp.set_preferences({
 
 --  This function gets run when an LSP connects to a particular buffer.
 lsp.on_attach(function(client, bufnr)
+
   local opts = { buffer = bufnr, remap = false }
 
   vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
@@ -59,6 +60,9 @@ lsp.on_attach(function(client, bufnr)
     vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
     vim.cmd("autocmd BufWritePre lua vim.lsp.buf.format()")
   end
+
+  -- a fix so eslint recognize prettier configuration: https://github.com/neovim/neovim/issues/21254#issuecomment-1383262852
+  client.server_capabilities.documentFormattingProvider = true
 end)
 
 lsp.setup()
