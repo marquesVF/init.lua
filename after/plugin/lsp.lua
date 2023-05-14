@@ -7,7 +7,10 @@ lsp.ensure_installed({
 	'lua_ls',
 	'rust_analyzer',
 	'tsserver',
-  'pyright'
+  'pyright',
+  'cssls',
+  'jsonls',
+  'gopls'
 })
 
 local cmp = require('cmp')
