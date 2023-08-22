@@ -10,6 +10,6 @@
 2. Clone [Packer](https://github.com/wbthomason/packer.nvim#quickstart);
 3. Clone this repository to `~/.config/nvim`
 4. Open neovim and run `:PackerSync`
-    * Make sure you machine meets the requirements to run [nvim-tree/nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) for some cool icons in the project tree viewer.
+    * Make sure to install the font `FiraCode Nerd Font` ts to run [nvim-tree/nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) for some cool icons in the project tree viewer.
 
 
