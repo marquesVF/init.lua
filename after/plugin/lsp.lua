@@ -3,14 +3,16 @@ local lsp = require("lsp-zero")
 lsp.preset("recommended")
 
 lsp.ensure_installed({
+  'cssls',
+  'cucumber_language_server',
   'eslint',
+  'gopls',
+  'jsonls',
+  'lemminx',
   'lua_ls',
+  'pyright',
   'rust_analyzer',
   'tsserver',
-  'pyright',
-  'cssls',
-  'jsonls',
-  'gopls'
 })
 
 local cmp = require('cmp')
@@ -42,7 +44,6 @@ lsp.set_preferences({
 
 --  This function gets run when an LSP connects to a particular buffer.
 lsp.on_attach(function(client, bufnr)
-
   local opts = { buffer = bufnr, remap = false }
 
   vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
