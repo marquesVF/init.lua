@@ -21,8 +21,8 @@ vim.keymap.set("n", "N", "Nzzzv")
 -- buffers
 --vim.keymap.set("n", "<leader>q", ":bd<CR>")
 vim.keymap.set("n", "<leader>da", ':silent! execute "%bd|e#|bd#"<CR>')
+vim.keymap.set("n", "<leader>ls", ':ls<CR>')
 -- end buffers
-
 vim.keymap.set("n", "<leader>f", vim.lsp.buf.format)
 
 vim.keymap.set("n", "<leader><leader>", function()

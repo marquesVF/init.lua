@@ -9,7 +9,19 @@ vim.keymap.set("n", "<C-n>", vim.cmd.NvimTreeToggle)
 vim.keymap.set("n", "<leader>it", vim.cmd.NvimTreeFindFile)
 
 -- empty setup using defaults
-require("nvim-tree").setup()
+require("nvim-tree").setup({
+  view = {
+    preserve_window_proportions = false
+  },
+  renderer = {
+    full_name = false,
+  },
+  actions = {
+    open_file = {
+      resize_window = false,
+    },
+  },
+})
 
 
 local tree = require('nvim-tree.view')
@@ -18,4 +30,3 @@ local tree = require('nvim-tree.view')
 tree.View.winopts.relativenumber = true
 -- don't resize the window when opening a file from the tree viewer
 tree.View.preserve_window_proportions = true
-
