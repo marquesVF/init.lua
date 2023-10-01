@@ -38,3 +38,7 @@ vim.keymap.set('n', '<leader>nvt', ":vsplit term://zsh <CR>") -- nvt: new vertic
 vim.keymap.set("v", "J", ":move '>+1<CR>gv-gv", opts)
 vim.keymap.set("v", "K", ":move '<-2<CR>gv-gv", opts)
 
+-- Resize panel
+vim.keymap.set('n', '<leader>=', ":resize +5 <CR>") -- nt: new terminal
+vim.keymap.set('n', '<leader>-', ":resize -5 <CR>") -- nt: new terminal
+
