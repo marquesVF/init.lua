@@ -8,7 +8,7 @@ return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
 
   use {
-    'nvim-telescope/telescope.nvim', tag = '0.1.1',
+    'nvim-telescope/telescope.nvim', tag = '0.1.4',
     -- or                            , branch = '0.1.x',
     requires = { { 'nvim-lua/plenary.nvim' } }
   }
@@ -32,6 +32,7 @@ return require('packer').startup(function(use)
   -- git related
   use('tpope/vim-fugitive')
   use('tveskag/nvim-blame-line')
+  use('tpope/vim-rhubarb')
   -- end git related
 
   -- autocompletion
@@ -96,4 +97,20 @@ return require('packer').startup(function(use)
   use 'nvim-lua/plenary.nvim'
   use 'mfussenegger/nvim-dap' -- Debug Adapter Protocol (inspect application state - jester dep)
   use 'David-Kunz/jester'     -- run and debug jest tests
+
+  -- Treat the file system as a buffer
+  use 'stevearc/oil.nvim'
+
+  -- ChatGPT
+  use({
+  "jackMort/ChatGPT.nvim",
+    config = function()
+      require("chatgpt").setup()
+    end,
+    requires = {
+      "MunifTanjim/nui.nvim",
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim"
+    }
+})
 end)
