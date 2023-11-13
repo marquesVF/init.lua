@@ -8,7 +8,7 @@ syntax match   srParensError    /[)}\]]/
 
 " Program Keywords
 " <foo> = 3 the next defines a variable
-syntax keyword srStorageClass   skipwhite skipempty nextgroup=srDestructuringBlock,srDestructuringArray,srVariableDef  
+syntax keyword srStorageClass   mut skipwhite skipempty nextgroup=srDestructuringBlock,srDestructuringArray,srVariableDef  
 syntax match   srVariableDef    contained /\<\K\k*/ skipwhite skipempty nextgroup=srFlowDefinition
 syntax keyword srOperatorKeyword delete instanceof typeof void new in skipwhite skipempty nextgroup=@srExpression
 syntax keyword srOf             of skipwhite skipempty nextgroup=@srExpression
@@ -321,6 +321,8 @@ hi def link srDestructuringBraces     Noise
 hi def link srDestructuringProperty   srFuncArgs
 hi def link srDestructuringAssignment srObjectKey
 hi def link srDestructuringNoise      Noise
+hi def link srObjectKey               Identifier
+hi def link srFuncArgs                Identifier
 
 hi def link srCommentFunction      srComment
 hi def link srCommentClass         srComment
