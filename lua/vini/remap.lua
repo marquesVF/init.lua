@@ -31,8 +31,8 @@ end)
 
 -- Terminal shortcuts
 vim.keymap.set('t', '<Esc>', "<C-\\><C-n>") -- exit terminal-mode with ESC
-vim.keymap.set('n', '<leader>nt', ":edit term://zsh <CR>") -- nt: new terminal
-vim.keymap.set('n', '<leader>nvt', ":vsplit term://zsh <CR>") -- nvt: new vertical terminal
+vim.keymap.set('n', '<leader>nt', ":edit term://zsh <CR> i") -- nt: new HORIZONTAL terminal entering insert mode
+vim.keymap.set('n', '<leader>nvt', ":vsplit term://zsh <CR> i") -- nvt: new VERTICAL terminal entering insert mode
 
 -- Move text up and down
 vim.keymap.set("v", "J", ":move '>+1<CR>gv-gv", opts)
