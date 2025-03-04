@@ -12,7 +12,7 @@ lsp.ensure_installed({
   'lua_ls',
   'pyright',
   'rust_analyzer',
-  'tsserver',
+  'ts_ls',
 })
 
 local cmp = require('cmp')
@@ -71,7 +71,7 @@ lsp.on_attach(function(client, bufnr)
   end
 
   -- a fix so eslint recognize prettier configuration: https://github.com/neovim/neovim/issues/21254#issuecomment-1383262852
-  client.server_capabilities.documentFormattingProvider = true
+  --client.server_capabilities.documentFormattingProvider = true
 end)
 
 lsp.setup()
