@@ -6,13 +6,11 @@ lsp.ensure_installed({
   'cssls',
   'cucumber_language_server',
   'eslint',
-  'gopls',
   'jsonls',
   'lemminx',
   'lua_ls',
   'pyright',
   'rust_analyzer',
-  'ts_ls',
 })
 
 local cmp = require('cmp')
