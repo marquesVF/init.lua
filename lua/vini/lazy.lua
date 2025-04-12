@@ -5,6 +5,14 @@ return {
     version = "*",
   },
 
+  -- Cursor AI
+  {
+    "cursor-sh/cursor.nvim",
+    config = function()
+      require("vini.cursor").setup()
+    end,
+  },
+
   -- Telescope
   {
     "nvim-telescope/telescope.nvim",
@@ -96,19 +104,6 @@ return {
 
   -- File system
   { "stevearc/oil.nvim" },
-
-  -- ChatGPT
-  -- {
-  --   "jackMort/ChatGPT.nvim",
-  --   config = function()
-  --     require("chatgpt").setup()
-  --   end,
-  --   dependencies = {
-  --     "MunifTanjim/nui.nvim",
-  --     "nvim-lua/plenary.nvim",
-  --     "nvim-telescope/telescope.nvim",
-  --   },
-  -- },
 
   { "MunifTanjim/prettier.nvim" },
 } 
