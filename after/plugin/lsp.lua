@@ -11,6 +11,7 @@ lsp.ensure_installed({
   'lua_ls',
   'pyright',
   'rust_analyzer',
+  'tsserver',
 })
 
 local cmp = require('cmp')
@@ -62,6 +63,14 @@ lsp.on_attach(function(client, bufnr)
   -- enable import key?: https://sharksforarms.dev/posts/neovim-rust/
   vim.keymap.set("n", "<leader>ga", vim.lsp.buf.code_action, {})
 
+  -- Git commands
+  vim.keymap.set("n", "<leader>gd", function()
+    vim.cmd("Gvdiff")
+  end, opts)
+  vim.keymap.set("n", "<leader>gD", function()
+    vim.cmd("Gdiff")
+  end, opts)
+
   -- format file when saving it
   if client.supports_method("textDocument/formatting") then
     vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
@@ -75,7 +84,11 @@ end)
 lsp.setup()
 
 vim.diagnostic.config({
-  virtual_text = true
+  virtual_text = true,
+  signs = true,
+  underline = true,
+  update_in_insert = false,
+  severity_sort = false,
 })
 
 local luasnip = require('luasnip')
