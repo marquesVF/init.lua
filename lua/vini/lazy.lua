@@ -57,6 +57,7 @@ return {
         end,
       },
       { "williamboman/mason-lspconfig.nvim" },
+      { "jose-elias-alvarez/null-ls.nvim" },
 
       -- Autocompletion
       { "hrsh7th/cmp-buffer" },

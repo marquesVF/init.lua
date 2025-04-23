@@ -71,14 +71,35 @@ lsp.on_attach(function(client, bufnr)
     vim.cmd("Gdiff")
   end, opts)
 
-  -- format file when saving it
-  if client.supports_method("textDocument/formatting") then
+  -- Auto-import under cursor (similar to VS Code's Ctrl+. )
+  vim.keymap.set("n", "<C-.>", function()
     vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
     vim.cmd("autocmd BufWritePre lua vim.lsp.buf.format()")
-  end
+  end)
 
   -- a fix so eslint recognize prettier configuration: https://github.com/neovim/neovim/issues/21254#issuecomment-1383262852
-  --client.server_capabilities.documentFormattingProvider = true
+  if client.supports_method("textDocument/formatting") then
+    client.server_capabilities.documentFormattingProvider = true
+  end
+
+  -- Configure formatting for TypeScript files
+  if client.name == "tsserver" then
+    client.server_capabilities.documentFormattingProvider = false
+  end
+
+  -- Set up formatting command that uses Prettier for TypeScript
+  vim.keymap.set("n", "<leader>f", function()
+    vim.lsp.buf.format({
+      filter = function(client)
+        -- Use Prettier for TypeScript files
+        if vim.bo.filetype == "typescript" or vim.bo.filetype == "typescriptreact" then
+          return client.name == "null-ls" -- Prettier runs through null-ls
+        end
+        -- Use default formatter for other file types
+        return true
+      end
+    })
+  end, opts)
 end)
 
 lsp.setup()
