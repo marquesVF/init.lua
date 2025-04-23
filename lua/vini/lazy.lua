@@ -5,6 +5,16 @@ return {
     version = "*",
   },
 
+  -- Command line UI
+  {
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "rcarriga/nvim-notify",
+    }
+  },
+
   -- Telescope
   {
     "nvim-telescope/telescope.nvim",
