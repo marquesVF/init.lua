@@ -5,7 +5,35 @@ vim.g.loaded_netrwPlugin = 1
 -- set termguicolors to enable highlight groups
 vim.opt.termguicolors = true
 
-vim.keymap.set("n", "<C-n>", vim.cmd.NvimTreeToggle)
+-- Function to save and restore window size
+local function save_tree_size()
+  local tree = require('nvim-tree.view')
+  if tree.is_visible() then
+    local width = vim.fn.winwidth(tree.get_winnr())
+    vim.g.nvim_tree_width = width
+  end
+end
+
+local function restore_tree_size()
+  local tree = require('nvim-tree.view')
+  if tree.is_visible() and vim.g.nvim_tree_width then
+    vim.cmd('vertical resize ' .. vim.g.nvim_tree_width)
+  end
+end
+
+-- Custom toggle function that preserves window size
+local function toggle_tree()
+  local tree = require('nvim-tree.view')
+  if tree.is_visible() then
+    save_tree_size()
+  end
+  vim.cmd.NvimTreeToggle()
+  vim.schedule(function()
+    restore_tree_size()
+  end)
+end
+
+vim.keymap.set("n", "<C-n>", toggle_tree)
 vim.keymap.set("n", "<leader>it", vim.cmd.NvimTreeFindFile)
 
 -- setup with defaults
@@ -53,31 +81,10 @@ require("nvim-tree").setup({
   },
 })
 
--- Function to save and restore window size
-local function save_tree_size()
-  local tree = require('nvim-tree.view')
-  if tree.is_visible() then
-    local width = vim.fn.winwidth(tree.get_winnr())
-    vim.g.nvim_tree_width = width
-  end
-end
-
-local function restore_tree_size()
-  local tree = require('nvim-tree.view')
-  if tree.is_visible() and vim.g.nvim_tree_width then
-    vim.cmd('vertical resize ' .. vim.g.nvim_tree_width)
-  end
-end
-
 -- Create autocommands to handle window size
 vim.api.nvim_create_autocmd({ "WinResized" }, {
   pattern = "NvimTree_*",
   callback = save_tree_size,
-})
-
-vim.api.nvim_create_autocmd({ "BufEnter" }, {
-  pattern = "NvimTree_*",
-  callback = restore_tree_size,
 })
 
 -- show line numbers in the tree
