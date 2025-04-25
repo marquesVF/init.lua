@@ -80,35 +80,6 @@ require("nvim-tree").setup({
     remove_file = {
       close_window = true,
     },
-    rename_file = {
-      enable = true,
-      -- This will use LSP for renaming when available
-      handler = function(old_path, new_path)
-        local clients = vim.lsp.get_active_clients()
-        local has_lsp = false
-        
-        -- Check if we have an active LSP client
-        for _, client in ipairs(clients) do
-          if client.supports_method("textDocument/rename") then
-            has_lsp = true
-            break
-          end
-        end
-
-        if has_lsp then
-          -- Use LSP rename
-          local params = {
-            oldName = old_path,
-            newName = new_path,
-            files = { { oldUri = vim.uri_from_fname(old_path), newUri = vim.uri_from_fname(new_path) } }
-          }
-          vim.lsp.buf.rename(new_path)
-        else
-          -- Fallback to basic rename
-          vim.fn.rename(old_path, new_path)
-        end
-      end
-    },
   },
   git = {
     enable = true,

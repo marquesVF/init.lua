@@ -56,7 +56,18 @@ lsp.on_attach(function(client, bufnr)
   vim.keymap.set("n", "<leader>of", function() vim.diagnostic.open_float() end, opts)
   vim.keymap.set("n", "[d", function() vim.diagnostic.goto_next() end, opts)
   vim.keymap.set("n", "]d", function() vim.diagnostic.goto_prev() end, opts)
-  vim.keymap.set("n", "<leader>gr", function() vim.lsp.buf.references() end, opts)
+  vim.keymap.set("n", "<leader>gr", function()
+    require('telescope.builtin').lsp_references({
+      layout_strategy = 'vertical',
+      layout_config = {
+        width = 0.9,
+        height = 0.9,
+        preview_cutoff = 1,
+        prompt_position = "top",
+      },
+      show_line = true,
+    })
+  end, opts)
   vim.keymap.set("n", "<leader>rn", function() vim.lsp.buf.rename() end, opts)
   vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
 
@@ -64,11 +75,8 @@ lsp.on_attach(function(client, bufnr)
   vim.keymap.set("n", "<leader>ga", vim.lsp.buf.code_action, {})
 
   -- Git commands
-  vim.keymap.set("n", "<leader>gd", function()
+  vim.keymap.set("n", "<leader>gdf", function()
     vim.cmd("Gvdiff")
-  end, opts)
-  vim.keymap.set("n", "<leader>gD", function()
-    vim.cmd("Gdiff")
   end, opts)
 
   -- Auto-import under cursor (similar to VS Code's Ctrl+. )
