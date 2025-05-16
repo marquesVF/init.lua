@@ -36,18 +36,28 @@ end
 vim.keymap.set("n", "<C-n>", toggle_tree)
 vim.keymap.set("n", "<leader>it", vim.cmd.NvimTreeFindFile)
 
--- setup with defaults
+-- Define custom mappings using on_attach
+local function my_on_attach(bufnr)
+  local api = require("nvim-tree.api")
+
+  local function opts(desc)
+    return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+  end
+
+  -- Add your custom mappings here
+  vim.keymap.set("n", "l", api.node.open.edit, opts("Open"))
+  vim.keymap.set("n", "h", api.node.navigate.parent_close, opts("Close Directory"))
+  vim.keymap.set("n", "v", api.node.open.vertical, opts("Open Vertical"))
+  -- Add more if needed
+end
+
+-- setup with updated options
 require("nvim-tree").setup({
+  on_attach = my_on_attach,
   view = {
     width = 40,
     preserve_window_proportions = true,
     side = "left",
-    mappings = {
-      custom_only = false,
-      list = {
-        -- Custom mappings can be added here
-      },
-    },
   },
   renderer = {
     full_name = false,
