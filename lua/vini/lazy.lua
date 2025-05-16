@@ -56,8 +56,7 @@ return {
           pcall(vim.cmd, "MasonUpdate")
         end,
       },
-      { "williamboman/mason-lspconfig.nvim" },
-      { "jose-elias-alvarez/null-ls.nvim" },
+      { "nvimtools/none-ls.nvim" },
 
       -- Autocompletion
       { "hrsh7th/cmp-buffer" },
