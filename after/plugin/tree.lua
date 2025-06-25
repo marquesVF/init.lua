@@ -36,26 +36,26 @@ end
 vim.keymap.set("n", "<C-n>", toggle_tree)
 vim.keymap.set("n", "<leader>it", vim.cmd.NvimTreeFindFile)
 
--- Define custom mappings using on_attach
-local function my_on_attach(bufnr)
+-- more more options
+local my_on_attach = function(bufnr)
   local api = require("nvim-tree.api")
+  api.config.mappings.default_on_attach(bufnr)
 
   local function opts(desc)
     return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
   end
 
-  -- Add your custom mappings here
-  vim.keymap.set("n", "l", api.node.open.edit, opts("Open"))
+  vim.keymap.set("n", "l", api.node.open.edit, opts("Open: Edit"))
   vim.keymap.set("n", "h", api.node.navigate.parent_close, opts("Close Directory"))
-  vim.keymap.set("n", "v", api.node.open.vertical, opts("Open Vertical"))
-  -- Add more if needed
+  vim.keymap.set("n", "v", api.node.open.vertical, opts("Open: Vertical Split"))
+  vim.keymap.set('n', '?', api.tree.toggle_help, opts("Help"))
 end
 
 -- setup with updated options
 require("nvim-tree").setup({
   on_attach = my_on_attach,
   view = {
-    width = 40,
+    width = 35,
     preserve_window_proportions = true,
     side = "left",
   },
