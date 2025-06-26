@@ -15,6 +15,34 @@ lsp.ensure_installed({
   'pyright',
 })
 
+-- Configure TypeScript server specifically
+lsp.configure('tsserver', {
+  settings = {
+    typescript = {
+      inlayHints = {
+        includeInlayParameterNameHints = 'all',
+        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayVariableTypeHints = true,
+        includeInlayPropertyDeclarationTypeHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayEnumMemberValueHints = true,
+      },
+    },
+    javascript = {
+      inlayHints = {
+        includeInlayParameterNameHints = 'all',
+        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayVariableTypeHints = true,
+        includeInlayPropertyDeclarationTypeHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayEnumMemberValueHints = true,
+      },
+    },
+  },
+})
+
 local cmp = require('cmp')
 local cmp_select = { behavior = cmp.SelectBehavior.Select }
 local cmp_mappings = lsp.defaults.cmp_mappings({
@@ -47,6 +75,12 @@ lsp.set_preferences({
   }
 })
 
+-- Additional LSP configuration for better TypeScript support
+lsp.nvim_workspace({
+  library = vim.api.nvim_get_runtime_file("", true),
+  check_third_party = false,
+})
+
 --  This function gets run when an LSP connects to a particular buffer.
 lsp.on_attach(function(client, bufnr)
   local opts = { buffer = bufnr, remap = false }
@@ -75,6 +109,23 @@ lsp.on_attach(function(client, bufnr)
   -- enable import key?: https://sharksforarms.dev/posts/neovim-rust/
   vim.keymap.set("n", "<leader>ga", vim.lsp.buf.code_action, {})
 
+  -- TypeScript-specific keymaps
+  if client.name == "tsserver" then
+    vim.keymap.set("n", "<leader>oi", function()
+      vim.lsp.buf.execute_command({
+        command = "_typescript.organizeImports",
+        arguments = { vim.api.nvim_buf_get_name(0) }
+      })
+    end, opts)
+    
+    vim.keymap.set("n", "<leader>oa", function()
+      vim.lsp.buf.execute_command({
+        command = "_typescript.addMissingImports",
+        arguments = { vim.api.nvim_buf_get_name(0) }
+      })
+    end, opts)
+  end
+
   -- Git commands
   vim.keymap.set("n", "<leader>gdf", function()
     vim.cmd("Gvdiff")
@@ -91,18 +142,19 @@ lsp.on_attach(function(client, bufnr)
     client.server_capabilities.documentFormattingProvider = true
   end
 
-  -- Configure formatting for TypeScript files
+  -- Configure TypeScript server formatting
   if client.name == "tsserver" then
-    client.server_capabilities.documentFormattingProvider = false
+    -- Don't disable formatting provider for TypeScript
+    -- Let null-ls handle formatting instead
   end
 
-  -- Set up formatting command that uses Prettier for TypeScript
+  -- Set up formatting command
   vim.keymap.set("n", "<leader>f", function()
     vim.lsp.buf.format({
       filter = function(client)
-        -- Use Prettier for TypeScript files
+        -- Use null-ls for TypeScript/TSX formatting
         if vim.bo.filetype == "typescript" or vim.bo.filetype == "typescriptreact" then
-          return client.name == "null-ls" -- Prettier runs through null-ls
+          return client.name == "null-ls"
         end
         -- Use default formatter for other file types
         return true
