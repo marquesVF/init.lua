@@ -5,40 +5,43 @@ vim.g.loaded_netrwPlugin = 1
 -- set termguicolors to enable highlight groups
 vim.opt.termguicolors = true
 
--- Function to save and restore window size
+-- Use the new public API
+local api = require("nvim-tree.api")
+
+-- Save and restore tree width
 local function save_tree_size()
-  local tree = require('nvim-tree.view')
-  if tree.is_visible() then
-    local width = vim.fn.winwidth(tree.get_winnr())
-    vim.g.nvim_tree_width = width
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    local bufname = vim.api.nvim_buf_get_name(buf)
+    if bufname:match("NvimTree_") then
+      vim.g.nvim_tree_width = vim.api.nvim_win_get_width(win)
+      return
+    end
   end
 end
+
 
 local function restore_tree_size()
-  local tree = require('nvim-tree.view')
-  if tree.is_visible() and vim.g.nvim_tree_width then
-    vim.cmd('vertical resize ' .. vim.g.nvim_tree_width)
+  if api.tree.is_visible() and vim.g.nvim_tree_width then
+    vim.cmd("vertical resize " .. vim.g.nvim_tree_width)
   end
 end
 
--- Custom toggle function that preserves window size
+-- Custom toggle that preserves window size
 local function toggle_tree()
-  local tree = require('nvim-tree.view')
-  if tree.is_visible() then
+  if api.tree.is_visible() then
     save_tree_size()
   end
-  vim.cmd.NvimTreeToggle()
-  vim.schedule(function()
-    restore_tree_size()
-  end)
+  api.tree.toggle()
+  vim.schedule(restore_tree_size)
 end
 
-vim.keymap.set("n", "<C-n>", toggle_tree)
-vim.keymap.set("n", "<leader>it", vim.cmd.NvimTreeFindFile)
+-- Keymaps
+vim.keymap.set("n", "<C-n>", toggle_tree, { desc = "Toggle nvim-tree (preserve size)" })
+vim.keymap.set("n", "<leader>it", vim.cmd.NvimTreeFindFile, { desc = "Reveal file in nvim-tree" })
 
--- more more options
-local my_on_attach = function(bufnr)
-  local api = require("nvim-tree.api")
+-- Custom mappings when tree opens
+local function my_on_attach(bufnr)
   api.config.mappings.default_on_attach(bufnr)
 
   local function opts(desc)
@@ -48,10 +51,10 @@ local my_on_attach = function(bufnr)
   vim.keymap.set("n", "l", api.node.open.edit, opts("Open: Edit"))
   vim.keymap.set("n", "h", api.node.navigate.parent_close, opts("Close Directory"))
   vim.keymap.set("n", "v", api.node.open.vertical, opts("Open: Vertical Split"))
-  vim.keymap.set('n', '?', api.tree.toggle_help, opts("Help"))
+  vim.keymap.set("n", "?", api.tree.toggle_help, opts("Help"))
 end
 
--- setup with updated options
+-- Setup nvim-tree with updated config
 require("nvim-tree").setup({
   on_attach = my_on_attach,
   view = {
@@ -98,12 +101,8 @@ require("nvim-tree").setup({
   },
 })
 
--- Create autocommands to handle window size
-vim.api.nvim_create_autocmd({ "WinResized" }, {
-  pattern = "NvimTree_*",
+-- Optional: preserve tree width on resize
+vim.api.nvim_create_autocmd("WinResized", {
+  pattern = "*",
   callback = save_tree_size,
 })
-
--- show line numbers in the tree
-local tree = require('nvim-tree.view')
-tree.View.winopts.relativenumber = true
