@@ -108,4 +108,10 @@ return {
   { "stevearc/oil.nvim" },
 
   { "MunifTanjim/prettier.nvim" },
+
+  {
+    "nvim-treesitter/nvim-treesitter",
+    dependencies = { "OXY2DEV/markview.nvim" },
+    lazy = false,
+  },
 } 
