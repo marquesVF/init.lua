@@ -56,6 +56,7 @@ return {
           pcall(vim.cmd, "MasonUpdate")
         end,
       },
+      { "williamboman/mason-lspconfig.nvim" },
       { "nvimtools/none-ls.nvim" },
 
       -- Autocompletion

@@ -12,6 +12,7 @@ lsp.ensure_installed({
   'pyright',
   'rust_analyzer',
   'tsserver',
+  'pyright',
 })
 
 local cmp = require('cmp')
@@ -190,3 +191,9 @@ cmp.setup({
     end,
   },
 })
+
+require("mason-lspconfig").setup {
+  handlers = {
+    lsp.default_setup,
+  },
+}
