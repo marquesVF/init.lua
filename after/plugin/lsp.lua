@@ -11,8 +11,7 @@ lsp.ensure_installed({
   'lua_ls',
   'pyright',
   'rust_analyzer',
-  'tsserver',
-  'pyright',
+  'ts_ls'
 })
 
 -- Configure TypeScript server specifically
