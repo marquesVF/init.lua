@@ -20,7 +20,7 @@ local function save_tree_size()
   end
 end
 
-
+-- Restore tree size
 local function restore_tree_size()
   if api.tree.is_visible() and vim.g.nvim_tree_width then
     vim.cmd("vertical resize " .. vim.g.nvim_tree_width)
@@ -61,6 +61,8 @@ require("nvim-tree").setup({
     width = 35,
     preserve_window_proportions = true,
     side = "left",
+    number = true,
+    relativenumber = true,
   },
   renderer = {
     full_name = false,
