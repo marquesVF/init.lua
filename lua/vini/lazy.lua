@@ -115,4 +115,6 @@ return {
     dependencies = { "OXY2DEV/markview.nvim" },
     lazy = false,
   },
-} 
+
+  { "supermaven-inc/supermaven-nvim" },
+}
