@@ -116,9 +116,6 @@ return {
         lazy = false,
     },
 
-    -- GAI Autocompletion
-    { "supermaven-inc/supermaven-nvim" },
-
     {
         "hat0uma/csvview.nvim",
         ---@module "csvview"
