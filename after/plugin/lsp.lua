@@ -2,16 +2,18 @@ local lsp = require("lsp-zero")
 
 lsp.preset("recommended")
 
-lsp.ensure_installed({
-  'cssls',
-  'cucumber_language_server',
-  'eslint',
-  'jsonls',
-  'lemminx',
-  'lua_ls',
-  'pyright',
-  'rust_analyzer',
-  'ts_ls'
+require("mason-lspconfig").setup({
+  ensure_installed = {
+    'cssls',
+    'cucumber_language_server',
+    'eslint',
+    'jsonls',
+    'lemminx',
+    'lua_ls',
+    'pyright',
+    'rust_analyzer',
+    'ts_ls'
+  }
 })
 
 local cmp = require('cmp')
@@ -175,7 +177,6 @@ cmp.setup({
   },
   sources = {
     { name = 'nvim_lsp' },
-    { name = "supermaven" },
     { name = 'luasnip' },
     { name = 'buffer' },
     { name = 'path' },
@@ -215,9 +216,3 @@ cmp.setup({
     end,
   },
 })
-
-require("mason-lspconfig").setup {
-  handlers = {
-    lsp.default_setup,
-  },
-}
