@@ -93,9 +93,6 @@ return {
         end,
     },
 
-    -- Coding stats
-    { "wakatime/vim-wakatime" },
-
     -- Rust
     { "neovim/nvim-lspconfig" },
     { "simrat39/rust-tools.nvim" },
