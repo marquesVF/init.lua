@@ -234,7 +234,7 @@ Then set your terminal emulator to use **FiraCode Nerd Font**.
 | [tokyonight.nvim](https://github.com/folke/tokyonight.nvim) | Tokyo Night color scheme |
 | [vim-fugitive](https://github.com/tpope/vim-fugitive) | Git integration |
 | [nvim-blame-line](https://github.com/tveskag/nvim-blame-line) | Git blame |
-| [rust-tools.nvim](https://github.com/simrat39/rust-tools.nvim) | Rust development tools |
+| [rustaceanvim](https://github.com/mrcjkb/rustaceanvim) | Rust development tools |
 | [jester](https://github.com/David-Kunz/jester) | Jest test runner |
 | [none-ls.nvim](https://github.com/nvimtools/none-ls.nvim) | Formatting/diagnostics |
 | [prettier.nvim](https://github.com/MunifTanjim/prettier.nvim) | Prettier integration |

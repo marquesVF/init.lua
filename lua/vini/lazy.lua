@@ -95,7 +95,7 @@ return {
 
     -- Rust
     { "neovim/nvim-lspconfig" },
-    { "simrat39/rust-tools.nvim" },
+    { "mrcjkb/rustaceanvim", version = '^6' }, -- It is suggested to pin to tagged releases to avoid breaking changes.
 
     -- Debugging
     { "nvim-lua/plenary.nvim" },
