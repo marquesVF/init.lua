@@ -1,6 +1,5 @@
-local lsp = require("lsp-zero")
-
-lsp.preset("recommended")
+-- Setup mason first
+require("mason").setup()
 
 require("mason-lspconfig").setup({
   ensure_installed = {
@@ -16,46 +15,18 @@ require("mason-lspconfig").setup({
   }
 })
 
-local cmp = require('cmp')
-local cmp_select = { behavior = cmp.SelectBehavior.Select }
-local cmp_mappings = lsp.defaults.cmp_mappings({
-  ['<C-y>'] = cmp.mapping.confirm({ select = true }),
-  ["<C-i>"] = cmp.mapping.complete(),
-  ['<C-n>'] = cmp.mapping(function()
-    if cmp.visible() then
-      cmp.select_next_item({ behavior = 'insert' })
-    else
-      cmp.complete()
-    end
-  end),
+-- Initialize lspconfig to add configs to runtimepath
+require('lspconfig')
+
+-- Global LSP settings
+vim.lsp.config('*', {
+  flags = {
+    debounce_text_changes = 150,
+  },
 })
 
-cmp_mappings['<Tab>'] = nil
-cmp_mappings['<S-Tab>'] = nil
-
-lsp.setup_nvim_cmp({
-  mapping = cmp_mappings,
-  select_behavior = 'insert'
-})
-
-lsp.set_preferences({
-  suggest_lsp_servers = false,
-  sign_icons = {
-    error = 'E',
-    warn = 'W',
-    hint = 'H',
-    info = 'I'
-  }
-})
-
--- Additional LSP configuration for better TypeScript support
-lsp.nvim_workspace({
-  library = vim.api.nvim_get_runtime_file("", true),
-  check_third_party = false,
-})
-
---  This function gets run when an LSP connects to a particular buffer.
-lsp.on_attach(function(client, bufnr)
+-- Define on_attach function for keybindings
+local on_attach = function(client, bufnr)
   local opts = { buffer = bufnr, remap = false }
 
   vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
@@ -83,14 +54,14 @@ lsp.on_attach(function(client, bufnr)
   vim.keymap.set("n", "<leader>ga", vim.lsp.buf.code_action, {})
 
   -- TypeScript-specific keymaps
-  if client.name == "tsserver" then
+  if client.name == "ts_ls" then
     vim.keymap.set("n", "<leader>oi", function()
       vim.lsp.buf.execute_command({
         command = "_typescript.organizeImports",
         arguments = { vim.api.nvim_buf_get_name(0) }
       })
     end, opts)
-    
+
     vim.keymap.set("n", "<leader>oa", function()
       vim.lsp.buf.execute_command({
         command = "_typescript.addMissingImports",
@@ -104,40 +75,104 @@ lsp.on_attach(function(client, bufnr)
     vim.cmd("Gvdiff")
   end, opts)
 
-  -- Auto-import under cursor (similar to VS Code's Ctrl+. )
-  vim.keymap.set("n", "<C-.>", function()
-    vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-    vim.cmd("autocmd BufWritePre lua vim.lsp.buf.format()")
-  end)
-
   -- a fix so eslint recognize prettier configuration: https://github.com/neovim/neovim/issues/21254#issuecomment-1383262852
   if client.supports_method("textDocument/formatting") then
     client.server_capabilities.documentFormattingProvider = true
   end
 
-  -- Configure TypeScript server formatting
-  if client.name == "tsserver" then
-    -- Don't disable formatting provider for TypeScript
-    -- Let null-ls handle formatting instead
-  end
-
   -- Set up formatting command
   vim.keymap.set("n", "<leader>f", function()
     vim.lsp.buf.format({
-      filter = function(client)
+      filter = function(c)
         -- Use null-ls for TypeScript/TSX formatting
         if vim.bo.filetype == "typescript" or vim.bo.filetype == "typescriptreact" then
-          return client.name == "null-ls"
+          return c.name == "null-ls"
         end
         -- Use default formatter for other file types
         return true
       end
     })
   end, opts)
-end)
+end
 
-lsp.setup()
+-- Create LspAttach autocmd
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+  callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    on_attach(client, ev.buf)
+  end,
+})
 
+-- Get capabilities from cmp_nvim_lsp
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
+-- Configure individual servers
+vim.lsp.config('lua_ls', {
+  capabilities = capabilities,
+  settings = {
+    Lua = {
+      runtime = { version = 'LuaJIT' },
+      diagnostics = { globals = { 'vim' } },
+      workspace = {
+        library = vim.api.nvim_get_runtime_file("", true),
+        checkThirdParty = false,
+      },
+      telemetry = { enable = false },
+    },
+  },
+})
+
+vim.lsp.config('ts_ls', {
+  capabilities = capabilities,
+})
+
+vim.lsp.config('eslint', {
+  capabilities = capabilities,
+})
+
+vim.lsp.config('cssls', {
+  capabilities = capabilities,
+})
+
+vim.lsp.config('jsonls', {
+  capabilities = capabilities,
+})
+
+vim.lsp.config('pyright', {
+  capabilities = capabilities,
+})
+
+vim.lsp.config('rust_analyzer', {
+  capabilities = capabilities,
+})
+
+vim.lsp.config('lemminx', {
+  capabilities = capabilities,
+})
+
+vim.lsp.config('cucumber_language_server', {
+  capabilities = capabilities,
+})
+
+-- Enable all LSP servers
+local servers = {
+  'cssls',
+  'cucumber_language_server',
+  'eslint',
+  'jsonls',
+  'lemminx',
+  'lua_ls',
+  'pyright',
+  'rust_analyzer',
+  'ts_ls',
+}
+
+for _, server in ipairs(servers) do
+  vim.lsp.enable(server)
+end
+
+-- Diagnostic configuration
 vim.diagnostic.config({
   virtual_text = true,
   signs = true,
@@ -146,6 +181,14 @@ vim.diagnostic.config({
   severity_sort = false,
 })
 
+-- Set up diagnostic signs
+local signs = { Error = 'E', Warn = 'W', Hint = 'H', Info = 'I' }
+for type, icon in pairs(signs) do
+  local hl = 'DiagnosticSign' .. type
+  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+end
+
+-- Setup nvim-cmp
 local luasnip = require('luasnip')
 local cmp = require('cmp')
 
@@ -155,7 +198,16 @@ cmp.setup({
       luasnip.lsp_expand(args.body)
     end
   },
-  mapping = {
+  mapping = cmp.mapping.preset.insert({
+    ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+    ['<C-i>'] = cmp.mapping.complete(),
+    ['<C-n>'] = cmp.mapping(function()
+      if cmp.visible() then
+        cmp.select_next_item({ behavior = 'insert' })
+      else
+        cmp.complete()
+      end
+    end),
     ["<CR>"] = cmp.mapping.confirm({
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
@@ -174,7 +226,7 @@ cmp.setup({
         fallback()
       end
     end,
-  },
+  }),
   sources = {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
