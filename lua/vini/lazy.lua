@@ -18,7 +18,6 @@ return {
     -- Telescope
     {
         "nvim-telescope/telescope.nvim",
-        tag = "0.1.4",
         dependencies = { "nvim-lua/plenary.nvim" },
     },
 
@@ -30,9 +29,9 @@ return {
     {
         "nvim-treesitter/nvim-treesitter",
         build = ":TSUpdate",
+        lazy = false,
+        dependencies = { "OXY2DEV/markview.nvim" },
     },
-    { "nvim-treesitter/playground" },
-
     -- Session management
     { "rmagatti/auto-session" },
 
@@ -44,31 +43,22 @@ return {
     { "tpope/vim-rhubarb" },
 
     -- LSP and Autocompletion
+    { "neovim/nvim-lspconfig" },
     {
-        "VonHeikemen/lsp-zero.nvim",
-        branch = "v2.x",
-        dependencies = {
-            -- LSP Support
-            { "neovim/nvim-lspconfig" },
-            {
-                "williamboman/mason.nvim",
-                build = function()
-                    pcall(vim.cmd, "MasonUpdate")
-                end,
-            },
-            { "williamboman/mason-lspconfig.nvim" },
-            { "nvimtools/none-ls.nvim" },
-
-            -- Autocompletion
-            { "hrsh7th/cmp-buffer" },
-            { "hrsh7th/cmp-nvim-lsp" },
-            { "hrsh7th/cmp-path" },
-            { "hrsh7th/nvim-cmp" },
-            {
-                "L3MON4D3/LuaSnip",
-                dependencies = { "rafamadriz/friendly-snippets" },
-            },
-        },
+        "williamboman/mason.nvim",
+        build = function()
+            pcall(vim.cmd, "MasonUpdate")
+        end,
+    },
+    { "williamboman/mason-lspconfig.nvim" },
+    { "nvimtools/none-ls.nvim" },
+    { "hrsh7th/cmp-buffer" },
+    { "hrsh7th/cmp-nvim-lsp" },
+    { "hrsh7th/cmp-path" },
+    { "hrsh7th/nvim-cmp" },
+    {
+        "L3MON4D3/LuaSnip",
+        dependencies = { "rafamadriz/friendly-snippets" },
     },
 
     -- UI Components
@@ -94,24 +84,29 @@ return {
     },
 
     -- Rust
-    { "neovim/nvim-lspconfig" },
-    { "mrcjkb/rustaceanvim", version = '^6' }, -- It is suggested to pin to tagged releases to avoid breaking changes.
+    {
+        "mrcjkb/rustaceanvim",
+        version = '^6',
+        ft = { "rust" },
+        init = function()
+            local lsp_utils = require("vini.lsp")
+
+            vim.g.rustaceanvim = {
+                server = {
+                    capabilities = lsp_utils.capabilities(),
+                    on_attach = lsp_utils.on_attach,
+                },
+            }
+        end,
+    },
 
     -- Debugging
-    { "nvim-lua/plenary.nvim" },
     { "mfussenegger/nvim-dap" },
-    { "David-Kunz/jester" },
 
     -- File system
     { "stevearc/oil.nvim" },
 
     { "MunifTanjim/prettier.nvim" },
-
-    {
-        "nvim-treesitter/nvim-treesitter",
-        dependencies = { "OXY2DEV/markview.nvim" },
-        lazy = false,
-    },
 
     {
         "hat0uma/csvview.nvim",

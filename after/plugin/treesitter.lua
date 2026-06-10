@@ -1,4 +1,13 @@
-require 'nvim-treesitter.configs'.setup {
+local ok, ts_configs = pcall(require, "nvim-treesitter.configs")
+
+if not ok then
+    vim.schedule(function()
+        vim.notify("nvim-treesitter is not available yet. Run :Lazy sync and :TSUpdate.", vim.log.levels.WARN)
+    end)
+    return
+end
+
+ts_configs.setup {
     -- A list of parser names, or "all" (the five listed parsers should always be installed)
     ensure_installed = {
         "javascript",
