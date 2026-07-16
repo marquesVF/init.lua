@@ -3,8 +3,19 @@ local builtin = require('telescope.builtin')
 
 telescope.setup({
   defaults = {
+    path_display = { 'smart' },
+    layout_strategy = 'horizontal',
+    layout_config = {
+      horizontal = {
+        width = 0.95,
+        preview_width = 0.55,
+      },
+      vertical = {
+        width = 0.95,
+      },
+    },
     preview = {
-      treesitter = false,
+      treesitter = true,
     },
   },
 })

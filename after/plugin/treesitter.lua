@@ -20,7 +20,8 @@ ts_configs.setup {
         "rust",
         "tsx",
         "bash",
-        "html"
+        "html",
+        "java",
     },
 
     -- Install parsers synchronously (only applied to `ensure_installed`)
