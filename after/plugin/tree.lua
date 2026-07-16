@@ -5,29 +5,86 @@ vim.g.loaded_netrwPlugin = 1
 -- set termguicolors to enable highlight groups
 vim.opt.termguicolors = true
 
--- Use the new public API
 local api = require("nvim-tree.api")
 
--- Save and restore tree width
+local state_dir = vim.fn.stdpath("state")
+local tree_width_file = state_dir .. "/nvim-tree-width"
+local tree_state_file = state_dir .. "/nvim-tree-state"
+local tree_resize_timer = nil
+
+local function load_tree_width()
+  local ok, lines = pcall(vim.fn.readfile, tree_width_file)
+  if not ok or not lines or #lines == 0 then
+    return nil
+  end
+
+  local width = tonumber(lines[1])
+  if width and width > 0 then
+    return width
+  end
+end
+
+local function persist_tree_width(width)
+  if not width or width <= 0 then
+    return
+  end
+
+  vim.fn.mkdir(vim.fn.fnamemodify(tree_width_file, ":h"), "p")
+  vim.fn.writefile({ tostring(width) }, tree_width_file)
+end
+
+local function load_tree_open_state()
+  local ok, lines = pcall(vim.fn.readfile, tree_state_file)
+  if not ok or not lines or #lines == 0 then
+    return nil
+  end
+
+  return lines[1] == "open"
+end
+
+local function persist_tree_open_state(is_open)
+  vim.fn.mkdir(vim.fn.fnamemodify(tree_state_file, ":h"), "p")
+  vim.fn.writefile({ is_open and "open" or "closed" }, tree_state_file)
+end
+
 local function save_tree_size()
   for _, win in ipairs(vim.api.nvim_list_wins()) do
-    local buf = vim.api.nvim_win_get_buf(win)
-    local bufname = vim.api.nvim_buf_get_name(buf)
+    local bufname = vim.api.nvim_buf_get_name(vim.api.nvim_win_get_buf(win))
     if bufname:match("NvimTree_") then
-      vim.g.nvim_tree_width = vim.api.nvim_win_get_width(win)
+      local width = vim.api.nvim_win_get_width(win)
+      vim.g.nvim_tree_width = width
+      persist_tree_width(width)
+      persist_tree_open_state(true)
       return
     end
   end
+
+  persist_tree_open_state(false)
 end
 
--- Restore tree size
 local function restore_tree_size()
-  if api.tree.is_visible() and vim.g.nvim_tree_width then
-    vim.cmd("vertical resize " .. vim.g.nvim_tree_width)
+  local width = vim.g.nvim_tree_width or load_tree_width()
+  if api.tree.is_visible() and width then
+    vim.cmd("vertical resize " .. width)
   end
 end
 
--- Custom toggle that preserves window size
+local function schedule_save_tree_size()
+  if tree_resize_timer then
+    tree_resize_timer:stop()
+    tree_resize_timer:close()
+  end
+
+  tree_resize_timer = vim.loop.new_timer()
+  tree_resize_timer:start(150, 0, vim.schedule_wrap(function()
+    save_tree_size()
+    if tree_resize_timer then
+      tree_resize_timer:close()
+      tree_resize_timer = nil
+    end
+  end))
+end
+
 local function toggle_tree()
   if api.tree.is_visible() then
     save_tree_size()
@@ -36,11 +93,20 @@ local function toggle_tree()
   vim.schedule(restore_tree_size)
 end
 
--- Keymaps
+local function restore_tree_state()
+  if load_tree_open_state() then
+    vim.schedule(function()
+      if not api.tree.is_visible() then
+        api.tree.open()
+      end
+      restore_tree_size()
+    end)
+  end
+end
+
 vim.keymap.set("n", "<C-n>", toggle_tree, { desc = "Toggle nvim-tree (preserve size)" })
 vim.keymap.set("n", "<leader>it", vim.cmd.NvimTreeFindFile, { desc = "Reveal file in nvim-tree" })
 
--- Custom mappings when tree opens
 local function my_on_attach(bufnr)
   api.config.mappings.default_on_attach(bufnr)
 
@@ -54,7 +120,6 @@ local function my_on_attach(bufnr)
   vim.keymap.set("n", "?", api.tree.toggle_help, opts("Help"))
 end
 
--- Setup nvim-tree with updated config
 require("nvim-tree").setup({
   on_attach = my_on_attach,
   view = {
@@ -64,47 +129,20 @@ require("nvim-tree").setup({
     number = true,
     relativenumber = true,
   },
-  renderer = {
-    full_name = false,
-    group_empty = true,
-    highlight_git = true,
-    highlight_opened_files = "all",
-    indent_markers = {
-      enable = true,
-    },
-    icons = {
-      show = {
-        git = true,
-        folder = true,
-        file = true,
-        folder_arrow = true,
-      },
-    },
-  },
-  actions = {
-    open_file = {
-      resize_window = false,
-      window_picker = {
-        enable = true,
-      },
-    },
-    change_dir = {
-      enable = true,
-      global = false,
-    },
-    remove_file = {
-      close_window = true,
-    },
-  },
-  git = {
-    enable = true,
-    ignore = false,
-    timeout = 500,
-  },
 })
 
--- Optional: preserve tree width on resize
-vim.api.nvim_create_autocmd("WinResized", {
-  pattern = "*",
-  callback = save_tree_size,
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    restore_tree_state()
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "WinResized", "WinClosed" }, {
+  callback = function()
+    if api.tree.is_visible() then
+      schedule_save_tree_size()
+    else
+      save_tree_size()
+    end
+  end,
 })
