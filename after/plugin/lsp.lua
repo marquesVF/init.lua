@@ -5,6 +5,7 @@ require("mason-lspconfig").setup({
     "cssls",
     "cucumber_language_server",
     "eslint",
+    "jdtls",
     "jsonls",
     "lemminx",
     "lua_ls",

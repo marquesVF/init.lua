@@ -51,6 +51,7 @@ return {
         end,
     },
     { "williamboman/mason-lspconfig.nvim" },
+    { "mfussenegger/nvim-jdtls", ft = { "java" } },
     { "nvimtools/none-ls.nvim" },
     { "hrsh7th/cmp-buffer" },
     { "hrsh7th/cmp-nvim-lsp" },
