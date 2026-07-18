@@ -108,7 +108,7 @@ vim.keymap.set("n", "<C-n>", toggle_tree, { desc = "Toggle nvim-tree (preserve s
 vim.keymap.set("n", "<leader>it", vim.cmd.NvimTreeFindFile, { desc = "Reveal file in nvim-tree" })
 
 local function my_on_attach(bufnr)
-  api.config.mappings.default_on_attach(bufnr)
+  api.map.on_attach.default(bufnr)
 
   local function opts(desc)
     return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
@@ -128,6 +128,21 @@ require("nvim-tree").setup({
     side = "left",
     number = true,
     relativenumber = true,
+  },
+  filters = {
+    git_ignored = false,
+    dotfiles = false,
+    custom = {
+      "^node_modules$",
+      "^dist$",
+      "^build$",
+      "^release$",
+      "^target$",
+      "^out$",
+      "^coverage$",
+      "^%.next$",
+      "^%.turbo$",
+    },
   },
 })
 

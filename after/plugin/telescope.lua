@@ -4,6 +4,17 @@ local builtin = require('telescope.builtin')
 telescope.setup({
   defaults = {
     path_display = { 'smart' },
+    file_ignore_patterns = {
+      'node_modules/',
+      'dist/',
+      'build/',
+      'release/',
+      'target/',
+      'out/',
+      'coverage/',
+      '%.next/',
+      '%.turbo/',
+    },
     layout_strategy = 'horizontal',
     layout_config = {
       horizontal = {
@@ -16,6 +27,14 @@ telescope.setup({
     },
     preview = {
       treesitter = true,
+    },
+  },
+  pickers = {
+    find_files = {
+      hidden = true,
+    },
+    git_files = {
+      hidden = true,
     },
   },
 })
