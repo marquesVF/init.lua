@@ -23,7 +23,7 @@ local capabilities = lsp_utils.capabilities()
 
 local cmp_mappings = {
   ["<C-y>"] = cmp.mapping.confirm({ select = true }),
-  ["<C-i>"] = cmp.mapping.complete(),
+  ["<C-Space>"] = cmp.mapping.complete(),
   ["<C-n>"] = cmp.mapping(function()
     if cmp.visible() then
       cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
@@ -83,6 +83,9 @@ vim.diagnostic.config({
 })
 
 cmp.setup({
+  completion = {
+    autocomplete = { cmp.TriggerEvent.TextChanged },
+  },
   snippet = {
     expand = function(args)
       luasnip.lsp_expand(args.body)
@@ -142,9 +145,10 @@ cmp.setup({
     fields = { "kind", "abbr", "menu" },
     format = function(entry, vim_item)
       local kind = require("lspkind").cmp_format({ mode = "symbol_text", maxwidth = 50 })(entry, vim_item)
-      local strings = vim.split(kind.kind, "%s", { trimempty = true })
-      kind.kind = " " .. strings[1] .. " "
-      kind.menu = "    (" .. strings[2] .. ")"
+      local kind_text = kind.kind or ""
+      local strings = vim.split(kind_text, "%s", { trimempty = true })
+      kind.kind = " " .. (strings[1] or kind_text) .. " "
+      kind.menu = "    (" .. (strings[2] or "") .. ")"
       return kind
     end,
   },
