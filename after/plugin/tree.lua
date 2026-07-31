@@ -12,6 +12,17 @@ local tree_width_file = state_dir .. "/nvim-tree-width"
 local tree_state_file = state_dir .. "/nvim-tree-state"
 local tree_resize_timer = nil
 
+local function get_tree_win()
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    if vim.api.nvim_win_is_valid(win) then
+      local buf = vim.api.nvim_win_get_buf(win)
+      if vim.bo[buf].filetype == "NvimTree" then
+        return win
+      end
+    end
+  end
+end
+
 local function load_tree_width()
   local ok, lines = pcall(vim.fn.readfile, tree_width_file)
   if not ok or not lines or #lines == 0 then
@@ -48,15 +59,13 @@ local function persist_tree_open_state(is_open)
 end
 
 local function save_tree_size()
-  for _, win in ipairs(vim.api.nvim_list_wins()) do
-    local bufname = vim.api.nvim_buf_get_name(vim.api.nvim_win_get_buf(win))
-    if bufname:match("NvimTree_") then
-      local width = vim.api.nvim_win_get_width(win)
-      vim.g.nvim_tree_width = width
-      persist_tree_width(width)
-      persist_tree_open_state(true)
-      return
-    end
+  local win = get_tree_win()
+  if win then
+    local width = vim.api.nvim_win_get_width(win)
+    vim.g.nvim_tree_width = width
+    persist_tree_width(width)
+    persist_tree_open_state(true)
+    return
   end
 
   persist_tree_open_state(false)
@@ -64,8 +73,9 @@ end
 
 local function restore_tree_size()
   local width = vim.g.nvim_tree_width or load_tree_width()
-  if api.tree.is_visible() and width then
-    vim.cmd("vertical resize " .. width)
+  local win = get_tree_win()
+  if win and width then
+    vim.api.nvim_win_set_width(win, width)
   end
 end
 
@@ -129,6 +139,11 @@ require("nvim-tree").setup({
     number = true,
     relativenumber = true,
   },
+  actions = {
+    open_file = {
+      resize_window = false,
+    },
+  },
   filters = {
     git_ignored = false,
     dotfiles = false,
@@ -152,12 +167,10 @@ vim.api.nvim_create_autocmd("VimEnter", {
   end,
 })
 
-vim.api.nvim_create_autocmd({ "WinResized", "WinClosed" }, {
+vim.api.nvim_create_autocmd("WinResized", {
   callback = function()
     if api.tree.is_visible() then
       schedule_save_tree_size()
-    else
-      save_tree_size()
     end
   end,
 })
