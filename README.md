@@ -115,10 +115,12 @@ Then set your terminal emulator to use **FiraCode Nerd Font**.
 
 | Mapping | Description |
 |---------|-------------|
-| `<leader>pv` | Open netrw file explorer |
-| `<leader>q` | Close current buffer |
+| `<leader>ca` | Copy absolute file path to clipboard |
+| `<leader>cp` | Copy relative file path to clipboard |
 | `<leader>da` | Close all buffers except current |
 | `<leader>f` | Format current file |
+| `<leader>pv` | Open netrw file explorer |
+| `<leader>q` | Close current buffer |
 | `<leader><leader>` | Source current file |
 
 ### Navigation

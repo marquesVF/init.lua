@@ -20,6 +20,18 @@ vim.keymap.set("n", "N", "Nzzzv")
 
 -- buffers
 --vim.keymap.set("n", "<leader>q", ":bd<CR>")
+vim.keymap.set("n", "<leader>ca", function()
+    local abs_path = vim.api.nvim_buf_get_name(0)
+    if abs_path == "" then return end
+    vim.fn.setreg("+", abs_path)
+    vim.notify("Copied absolute path: " .. abs_path, vim.log.levels.INFO)
+end, { desc = "Copy absolute file path to clipboard" })
+vim.keymap.set("n", "<leader>cp", function()
+    local rel_path = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":.")
+    if rel_path == "" then return end
+    vim.fn.setreg("+", rel_path)
+    vim.notify("Copied relative path: " .. rel_path, vim.log.levels.INFO)
+end, { desc = "Copy relative file path to clipboard" })
 vim.keymap.set("n", "<leader>da", ':silent! execute "%bd|e#|bd#"<CR>')
 vim.keymap.set("n", "<leader>ls", ':ls<CR>')
 -- end buffers
