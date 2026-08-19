@@ -147,9 +147,15 @@ Then set your terminal emulator to use **FiraCode Nerd Font**.
 |---------|-------------|
 | `<C-n>` | Toggle file tree |
 | `<leader>it` | Reveal current file in tree |
+| `<Tab>` | Preview file in floating window / expand folder |
+| `P` | Watch preview while moving in tree |
+| `<Esc>` | Close/unwatch preview |
+| `<C-f>` / `<C-b>` | Scroll preview down/up |
 | `l` | Open file/expand folder |
 | `h` | Collapse folder |
 | `v` | Open in vertical split |
+
+Use `<Tab>` to preview files without leaving the tree, and `P` to keep the preview synced while you move.
 
 ### LSP
 
@@ -228,6 +234,7 @@ Then set your terminal emulator to use **FiraCode Nerd Font**.
 | [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) | Autocompletion |
 | [LuaSnip](https://github.com/L3MON4D3/LuaSnip) | Snippet engine |
 | [nvim-tree.lua](https://github.com/nvim-tree/nvim-tree.lua) | File explorer |
+| [nvim-tree-preview.lua](https://github.com/b0o/nvim-tree-preview.lua) | Floating preview for nvim-tree |
 | [barbar.nvim](https://github.com/romgrk/barbar.nvim) | Tab/buffer line |
 | [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) | Status line |
 | [noice.nvim](https://github.com/folke/noice.nvim) | UI for messages and cmdline |

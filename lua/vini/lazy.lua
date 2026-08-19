@@ -64,7 +64,13 @@ return {
 
     -- UI Components
     { "nvim-tree/nvim-web-devicons" },
-    { "nvim-tree/nvim-tree.lua" },
+    {
+        "nvim-tree/nvim-tree.lua",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "b0o/nvim-tree-preview.lua",
+        },
+    },
     { "romgrk/barbar.nvim",         dependencies = "nvim-web-devicons" },
     { "preservim/nerdcommenter" },
     { "maxmellon/vim-jsx-pretty" },

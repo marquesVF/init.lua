@@ -120,15 +120,63 @@ vim.keymap.set("n", "<leader>it", vim.cmd.NvimTreeFindFile, { desc = "Reveal fil
 local function my_on_attach(bufnr)
   api.map.on_attach.default(bufnr)
 
+  local preview = require("nvim-tree-preview")
+
   local function opts(desc)
     return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
   end
+
+  vim.keymap.set("n", "P", preview.watch, opts("Preview: Watch"))
+  vim.keymap.set("n", "<Esc>", preview.unwatch, opts("Close Preview/Unwatch"))
+  vim.keymap.set("n", "<C-f>", function()
+    return preview.scroll(4)
+  end, opts("Preview: Scroll Down"))
+  vim.keymap.set("n", "<C-b>", function()
+    return preview.scroll(-4)
+  end, opts("Preview: Scroll Up"))
+  vim.keymap.set("n", "<Tab>", function()
+    local ok, node = pcall(api.tree.get_node_under_cursor)
+    if not ok or not node then
+      return
+    end
+
+    if node.type == "directory" then
+      api.node.open.edit()
+      return
+    end
+
+    preview.node(node, { toggle_focus = true })
+  end, opts("Preview"))
 
   vim.keymap.set("n", "l", api.node.open.edit, opts("Open: Edit"))
   vim.keymap.set("n", "h", api.node.navigate.parent_close, opts("Close Directory"))
   vim.keymap.set("n", "v", api.node.open.vertical, opts("Open: Vertical Split"))
   vim.keymap.set("n", "?", api.tree.toggle_help, opts("Help"))
 end
+
+require("nvim-tree-preview").setup({
+  win_position = {
+    col = function(tree_win, _)
+      return vim.fn.winwidth(tree_win) + 1
+    end,
+    row = function(tree_win, size)
+      local cursor_row = vim.api.nvim_win_get_cursor(tree_win)[1] - 1
+      local win_info = vim.fn.getwininfo(tree_win)[1]
+      local topline = win_info.topline - 1
+      local relative_cursor = cursor_row - topline
+      local win_pos = vim.api.nvim_win_get_position(tree_win)
+      local screen_row = win_pos[1] + relative_cursor
+      local editor_height = vim.api.nvim_get_option_value("lines", {}) - 1
+      local row = relative_cursor
+
+      if screen_row + size.height > editor_height then
+        row = relative_cursor - ((screen_row + size.height) - editor_height)
+      end
+
+      return math.max(row, 0)
+    end,
+  },
+})
 
 require("nvim-tree").setup({
   on_attach = my_on_attach,
