@@ -132,6 +132,24 @@ Then set your terminal emulator to use **FiraCode Nerd Font**.
 | `<C-u>` | Scroll up (centered) |
 | `n` / `N` | Next/previous search result (centered) |
 
+### Folding
+
+Folding prefers Treesitter when a parser is available for the current filetype, and falls back to indent-based folding for normal code buffers without Treesitter support. Special buffers (like terminals) keep manual folding.
+
+Folds are available by default but start expanded, so you can collapse blocks only when you want to.
+
+| Mapping | Description |
+|---------|-------------|
+| `za` | Toggle fold under cursor |
+| `zc` | Close fold under cursor |
+| `zo` | Open fold under cursor |
+| `zM` | Close all folds |
+| `zR` | Open all folds |
+
+Place the cursor on a `{}` block, an indented block, or another syntax-aware code region and use the built-in fold commands above.
+
+If a filetype has no Treesitter parser yet, folding will still work via indentation in most code files.
+
 ### Telescope (Fuzzy Finder)
 
 | Mapping | Description |

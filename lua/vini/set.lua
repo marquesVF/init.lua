@@ -36,3 +36,35 @@ vim.opt.cursorline = true
 -- yank to clipboard: handy when copying things from and to neovim
 vim.opt.clipboard = "unnamedplus"
 
+vim.opt.foldenable = true
+vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 99
+
+local fold_group = vim.api.nvim_create_augroup("vini_folding", { clear = true })
+
+local function set_fold_options()
+    vim.opt_local.foldenable = true
+    vim.opt_local.foldlevel = 99
+    vim.opt_local.foldlevelstart = 99
+
+    if vim.bo.buftype ~= "" or vim.bo.filetype == "" then
+        vim.opt_local.foldmethod = "manual"
+        vim.opt_local.foldexpr = "0"
+        return
+    end
+
+    local ok, parsers = pcall(require, "nvim-treesitter.parsers")
+    if ok and parsers.has_parser(vim.bo.filetype) then
+        vim.opt_local.foldmethod = "expr"
+        vim.opt_local.foldexpr = "nvim_treesitter#foldexpr()"
+        return
+    end
+
+    vim.opt_local.foldmethod = "indent"
+    vim.opt_local.foldexpr = "0"
+end
+
+vim.api.nvim_create_autocmd({ "BufEnter", "FileType" }, {
+    group = fold_group,
+    callback = set_fold_options,
+})
