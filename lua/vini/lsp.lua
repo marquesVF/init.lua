@@ -6,19 +6,22 @@ end
 
 function M.on_attach(client, bufnr)
   local opts = { buffer = bufnr, remap = false }
+  local function map(mode, lhs, rhs, desc)
+    vim.keymap.set(mode, lhs, rhs, vim.tbl_extend("force", opts, { desc = desc }))
+  end
   local format_augroup = vim.api.nvim_create_augroup("ViniLspFormat", { clear = false })
 
-  vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-  vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-  vim.keymap.set("n", "<leader>vws", vim.lsp.buf.workspace_symbol, opts)
-  vim.keymap.set("n", "<leader>of", vim.diagnostic.open_float, opts)
-  vim.keymap.set("n", "[d", vim.diagnostic.goto_next, opts)
-  vim.keymap.set("n", "]d", vim.diagnostic.goto_prev, opts)
-  vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-  vim.keymap.set("i", "<C-h>", vim.lsp.buf.signature_help, opts)
-  vim.keymap.set("n", "<leader>ga", vim.lsp.buf.code_action, opts)
+  map("n", "gd", vim.lsp.buf.definition, "Go to definition")
+  map("n", "K", vim.lsp.buf.hover, "Hover documentation")
+  map("n", "<leader>vws", vim.lsp.buf.workspace_symbol, "Workspace symbols")
+  map("n", "<leader>of", vim.diagnostic.open_float, "Show diagnostic")
+  map("n", "[d", vim.diagnostic.goto_next, "Next diagnostic")
+  map("n", "]d", vim.diagnostic.goto_prev, "Previous diagnostic")
+  map("n", "<leader>rn", vim.lsp.buf.rename, "Rename symbol")
+  map("i", "<C-h>", vim.lsp.buf.signature_help, "Signature help")
+  map("n", "<leader>ga", vim.lsp.buf.code_action, "Code action")
 
-  vim.keymap.set("n", "<leader>gr", function()
+  map("n", "<leader>gr", function()
     require("telescope.builtin").lsp_references({
       layout_strategy = "vertical",
       layout_config = {
@@ -29,29 +32,29 @@ function M.on_attach(client, bufnr)
       },
       show_line = true,
     })
-  end, opts)
+  end, "Find references")
 
   if client.name == "ts_ls" then
-    vim.keymap.set("n", "<leader>oi", function()
+    map("n", "<leader>oi", function()
       vim.lsp.buf.execute_command({
         command = "_typescript.organizeImports",
         arguments = { vim.api.nvim_buf_get_name(0) },
       })
-    end, opts)
+    end, "Organize imports")
 
-    vim.keymap.set("n", "<leader>oa", function()
+    map("n", "<leader>oa", function()
       vim.lsp.buf.execute_command({
         command = "_typescript.addMissingImports",
         arguments = { vim.api.nvim_buf_get_name(0) },
       })
-    end, opts)
+    end, "Add missing imports")
   end
 
-  vim.keymap.set("n", "<leader>gdf", function()
+  map("n", "<leader>gdf", function()
     vim.cmd("Gvdiff")
-  end, opts)
+  end, "Diff against index")
 
-  vim.keymap.set("n", "<C-.>", function()
+  map("n", "<C-.>", function()
     vim.api.nvim_clear_autocmds({ group = format_augroup, buffer = bufnr })
     vim.api.nvim_create_autocmd("BufWritePre", {
       group = format_augroup,
@@ -60,13 +63,13 @@ function M.on_attach(client, bufnr)
         vim.lsp.buf.format()
       end,
     })
-  end, opts)
+  end, "Format buffer on save")
 
   if client.supports_method("textDocument/formatting") then
     client.server_capabilities.documentFormattingProvider = true
   end
 
-  vim.keymap.set("n", "<leader>f", function()
+  map("n", "<leader>f", function()
     vim.lsp.buf.format({
       filter = function(active_client)
         if vim.bo.filetype == "typescript" or vim.bo.filetype == "typescriptreact" then
@@ -76,7 +79,7 @@ function M.on_attach(client, bufnr)
         return true
       end,
     })
-  end, opts)
+  end, "Format buffer (LSP)")
 end
 
 return M

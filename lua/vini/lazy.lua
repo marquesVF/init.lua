@@ -15,6 +15,42 @@ return {
         }
     },
 
+    -- Keymap helper
+    {
+        "folke/which-key.nvim",
+        keys = {
+            {
+                "<leader>?",
+                function()
+                    local function show_leader_keymaps()
+                        if not require("which-key.config").loaded then
+                            vim.schedule(show_leader_keymaps)
+                            return
+                        end
+
+                        require("which-key").show({ keys = "<leader>" })
+                    end
+
+                    show_leader_keymaps()
+                end,
+                desc = "Show leader keymaps",
+                mode = "n",
+            },
+        },
+        opts = {
+            spec = {
+                { "<leader>b", group = "Buffers" },
+                { "<leader>c", group = "Clipboard" },
+                { "<leader>f", group = "Find" },
+                { "<leader>g", group = "Git & navigation" },
+                { "<leader>i", group = "Tree" },
+                { "<leader>n", group = "Terminal" },
+                { "<leader>o", group = "Organize & diagnostics" },
+                { "<leader>r", group = "Rust & refactor" },
+            },
+        },
+    },
+
     -- Telescope
     {
         "nvim-telescope/telescope.nvim",

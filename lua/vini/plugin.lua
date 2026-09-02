@@ -37,5 +37,5 @@ function BuffKill(target_buf, should_force)
   api.nvim_command(table.concat({command, target_buf}, ' '))
 end
 
-vim.keymap.set("n", "<leader>q", BuffKill)
+vim.keymap.set("n", "<leader>q", BuffKill, { desc = "Kill buffer" })
 
