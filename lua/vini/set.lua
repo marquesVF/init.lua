@@ -53,10 +53,10 @@ local function set_fold_options()
         return
     end
 
-    local ok, parsers = pcall(require, "nvim-treesitter.parsers")
-    if ok and parsers.has_parser(vim.bo.filetype) then
+    local parser_ok, parser = pcall(vim.treesitter.get_parser, 0)
+    if parser_ok and parser then
         vim.opt_local.foldmethod = "expr"
-        vim.opt_local.foldexpr = "nvim_treesitter#foldexpr()"
+        vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
         return
     end
 
