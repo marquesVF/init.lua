@@ -36,6 +36,10 @@ vim.keymap.set("n", "<leader>da", ':silent! execute "%bd|e#|bd#"<CR>', { desc = 
 vim.keymap.set("n", "<leader>ls", ':ls<CR>', { desc = "List buffers" })
 -- end buffers
 vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, { desc = "Format buffer" })
+vim.keymap.set("n", "<leader>tw", function()
+    vim.wo.wrap = not vim.wo.wrap
+    vim.notify("Line wrapping " .. (vim.wo.wrap and "enabled" or "disabled"), vim.log.levels.INFO)
+end, { desc = "Toggle line wrapping in current window" })
 
 vim.keymap.set("n", "<leader><leader>", function()
     vim.cmd("so")
