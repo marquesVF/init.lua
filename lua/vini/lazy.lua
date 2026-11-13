@@ -26,10 +26,13 @@ return {
     { "folke/tokyonight.nvim" },
     { "Mofiqul/vscode.nvim" },
 
-    -- Treesitter
+    -- Treesitter and Markdown preview
     {
         "nvim-treesitter/nvim-treesitter",
+        branch = "master",
         build = ":TSUpdate",
+        dependencies = { "OXY2DEV/markview.nvim" },
+        lazy = false,
     },
     { "nvim-treesitter/playground" },
 
@@ -106,12 +109,6 @@ return {
     { "stevearc/oil.nvim" },
 
     { "MunifTanjim/prettier.nvim" },
-
-    {
-        "nvim-treesitter/nvim-treesitter",
-        dependencies = { "OXY2DEV/markview.nvim" },
-        lazy = false,
-    },
 
     {
         "hat0uma/csvview.nvim",
